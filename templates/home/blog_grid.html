@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <title>E.Y | Home</title>
+
+  <!-- Styles -->
+  {% include './styles.html' %}
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="/static/assets/apple-touch-icon.png">
+  <link rel="icon" href="/static/assets/favicon-32x32.png">
+  <style>
+    header {
+      background-color: #000000 !important;
+    }
+    .card-img-top{
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <!-- Topbar -->
+
+  <!-- END Topbar -->
+  {% include './navbar.html' %}
+
+
+  <!-- Header -->
+  <header class="header header-inverse" style="background-color: #9ac29d">
+    <div class="container text-center">
+
+      <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2">
+
+          <h1>Latest Posts</h1>
+          <p class="fs-20 opacity-70">Read and get updated on how we progress.</p>
+
+        </div>
+      </div>
+
+    </div>
+  </header>
+  <!-- END Header -->
+
+
+
+
+  <!-- Main container -->
+  <main class="main-content">
+
+
+
+
+    <!--
+      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
+      | Basic cards
+      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
+      !-->
+    <section class="section bg-gray">
+      <div class="container">
+
+        <div class="row gap-y">
+
+          {% if posts %}
+          {% for post in posts %}
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card card-hover-shadow">
+              <a href="/post/{{post.slug}}"><img class="card-img-top" src="/media/{{post.image}}"
+                  alt="Card image cap"></a>
+              <div class="card-block">
+                <h4 class="card-title">{{post.title}}</h4>
+                <p class="card-text">{{ post.content|safe|truncatewords:20}}</p>
+                <a class="fw-600 fs-12" href="/post/{{ post.slug }}">Read more <i
+                    class="fa fa-chevron-right fs-9 pl-8"></i></a>
+              </div>
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+
+
+        <nav class="flexbox mt-30">
+          <a class="btn btn-white disabled"><i class="ti-arrow-left fs-9 mr-4"></i> Newer</a>
+          <a class="btn btn-white" href="#">Older <i class="ti-arrow-right fs-9 ml-4"></i></a>
+        </nav>
+        {% else %}
+        <h1 class="justify-content-center d-flex" style="width: 100%;">Posts Not Found</h1>
+      </div>
+      {% endif %}
+
+      </div>
+    </section>
+
+  </main>
+  <!-- END Main container -->
+
+
+
+
+
+  <script>
+    document.onvisibilitychange = function () {
+      if (document.visibilityState == "visible") {
+        document.title = "E.Y | Home"
+      }
+      else {
+        document.title = "E.Y | Are you tired of reading articles?"
+      }
+    }
+  </script>
+  <!-- Footer -->
+  {% include './footer.html' %}
+  <!-- END Footer -->
+
+
+
+  <!-- Scripts -->
+  {% include './scripts.html' %}
+
+</body>
+
+</html>

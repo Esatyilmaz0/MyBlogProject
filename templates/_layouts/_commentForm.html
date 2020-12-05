@@ -1,0 +1,139 @@
+{% load custom_tags %}
+{% load i18n %}
+
+<div class="section bg-gray pt-7">
+    <div class="container">
+
+        <div class="row ml-5">
+
+            <div class="col-lg-8 mx-auto">
+            <!-- Comment Form -->
+                {% if request.user.is_authenticated %}
+                    <form action="{% url 'add_comment' %}" method="POST">
+                    <div class="form-group">
+                        <textarea class="form-control" id="content" placeholder="{% trans "Comment" %}" name="content"
+                            rows="4"></textarea>
+                    </div>
+                    <button class="btn btn-primary btn-block" type="button" onclick="addComment()">{% trans "Submit your comment." %}</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-danger">{% trans "Please Login Before Commenting." %}</div>
+                {% endif %}
+            <!-- ./Comment Form -->
+            </div>
+
+
+            <!-- Comments -->
+            <div class="col-lg-8 mx-auto" id="comments">
+                
+                
+                {% for comment in post.comments.all %}
+                <div class="media-list">
+                    <div class="media">
+                        <img class="avatar avatar-sm mr-4" src="{{ request.user.profile.image_url}}" alt="...">
+
+                        <div class="media-body">
+                            <div class="small-1">
+                                <strong>{{ comment.author }}</strong>
+                                <time class="ml-4 opacity-70 small-3"
+                                    datetime="{{ comment.created_date }}">{{ comment.created_date|timesince }}
+                                    {% trans "ago" %}
+                                </time>
+
+                                    {% if request.user.is_authenticated and comment in user.profile.favourite_comments.all %}
+                                        <button class="btn p-0 font-size-15">
+                                            <i class="fas fa-star color-yellow hover-grey" id="favourite_comment" onclick="favourite_comment({{ comment.id }})">
+
+                                            </i>
+                                        </button>
+                                    {% else %}
+                                        <button class="btn p-0 font-size-15">
+                                            <i class="fas fa-star hover-yellow" id="favourite_comment" onclick="favourite_comment({{ comment.id }})">
+
+                                            </i>
+                                        </button>
+                                    {% endif %}
+                            </div>
+                            <p class="small-2 mb-0">
+                                {{ comment.content }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                {% empty %}
+                    <div class="alert alert-danger">
+                        {% trans "Comments Not Found" %}
+                    </div>
+                    <div class="alert alert-success">
+                        {% trans "Be the first to comment." %}
+                    </div>
+                {% endfor %}
+            <!-- ./Comments -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var post_id = "{{ post.id }}";
+    var csrf_token = "{{ csrf_token }}";
+    function addComment() {
+        var content = $("#content").val();
+        var language_code = "{{request.LANGUAGE_CODE}}";
+        $.post("/" + language_code + "/add/comment", { content: content, post: post_id, csrfmiddlewaretoken: csrf_token }, (data, textStatus) => {
+            console.log(data)
+            if (data.comment) {
+                $("#comments .alert-danger").remove();
+                $("#comments").prepend(
+                    `
+                    <div class="alert alert-success">Comment Successfully Submitted.</div>
+                    <div class="media-list">
+                    <div class="media">
+                        <img class="avatar avatar-sm mr-4" src="{{ request.user.profile.image_url}}" alt="...">
+
+                            <div class="media-body">
+                                <div class="small-1">
+                                    <strong>${ data.comment.author}</strong>
+                                    <time class="ml-4 opacity-70 small-3"
+                                        datetime="${ data.comment.created_date}">{% get_timesince %}
+                                        ago</time>
+                                </div>
+                                <p class="small-2 mb-0">
+                                    ${ content}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    `
+                );
+                setTimeout(() => {
+                    $("#comments .alert-success").remove()
+                }, 3000)
+            }
+            else if(data.error){
+                $("#comments .alert-danger").remove();
+                $("#comments").prepend(
+                    
+                    `
+                    <div class="alert alert-danger">${data.error}</div>
+                    `
+                )
+            }
+        })
+    }
+
+    function favourite_comment(data, err) {
+        let username = "{{ request.user }}";
+        let language_code = "{{ request.LANGUAGE_CODE }}";
+        $.post("/" + language_code + "/favourite/comment", {user:username, comment_id:data, csrfmiddlewaretoken:csrf_token}, (data,textStatus) => {
+            if(data.code === "success"){
+                location.reload()
+            }
+        })
+    }
+
+</script>

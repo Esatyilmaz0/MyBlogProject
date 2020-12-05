@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <title>TheSaaS - Blog post</title>
+
+  <!-- Styles -->
+  {% include './styles.html' %}
+  {% load i18n %}
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="icon" href="assets/img/favicon.png">
+  <style>
+    .copy_button{
+      transition: 1s all;
+      position: absolute;
+      right: 15px;
+      width: 100px;
+      background-color: rgb(201, 40, 40);
+
+      top: 5px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    .category {
+      font-size: 52px;
+
+    }
+    .fa-close{
+      font-size:15px;color: grey;transition: 600ms all;
+    }
+    .fa-close:hover{
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <!-- Topbar -->
+  {% include './navbar.html' %}
+  <!-- END Topbar -->
+
+
+
+  <!-- Header -->
+  <header class="header header-inverse h-fullscreen pb-80" style="background-image: url(assets/img/bg-cup.jpg);"
+    data-overlay="8">
+    <div class="container text-center">
+
+      <div class="row h-full">
+        <div class="col-12 col-lg-8 offset-lg-2 align-self-center">
+
+          <a class="category" href="{% url 'category' category_name=post.category %}">{{post.category}}</a>
+          <hr>
+          <h1 class="display-4 hidden-sm-down">{{post.title}}</h1>
+          <h1 class="hidden-md-up">{{post.title}}</h1>
+          <br><br>
+          <p><span class="opacity-70 mr-8">By</span> <a class="text-white" href="#">{{post.author}}</a></p>
+          <p><img class="rounded-circle w-40" src="{{ post.author.profile.image_url }}" alt="..."></p>
+
+        </div>
+
+        <div class="col-12 align-self-end text-center">
+          <a class="scroll-down-1 scroll-down-inverse" href="#" data-scrollto="section-content"><span></span></a>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+  <!-- END Header -->
+
+
+
+
+  <!-- Main container -->
+  <main class="main-content">
+
+
+
+    <!--
+      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
+      | Blog content
+      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
+      !-->
+    <div class="section" id="section-content">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-12 col-lg-8 offset-lg-2">
+            {{post.content|safe}}
+            <div class="gap-multiline-items-1 mt-30">
+
+              {% for tag in tags_list %}
+              <a class="badge badge-pill badge-default" href="#">{{tag}}</a>
+              {% endfor %}
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+
+
+    <!--
+      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
+      | Comments
+      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
+      !-->
+    <div class="section bt-1 bg-grey">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-12 col-lg-8 offset-lg-2">
+            
+            {% if error %}
+              <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+              
+            <div class="media-list">
+
+              {% for comment in post.comments.all %}
+              <div class="media">
+                
+                <img class="rounded-circle w-40" src="{{ comment.author.profile.image_url }}" alt="...">
+
+                <div class="media-body">
+                  <p class="fs-14">
+                    <strong>{{comment.author}}</strong>
+                    <time class="ml-16 opacity-70 fs-12"
+                      datetime="{{comment.created_date}}">{{comment.created_date|timesince}}</time>
+                  </p>
+                  <p class="fs-13">{{ comment.content }}</p>
+                </div>
+                
+                {% if request.user.is_authenticated and request.user.is_staff %}
+                <button type="button" id="delete_comment" style="cursor: pointer;background: none;border: none;" data-comment_id="{{ comment.id }}">
+                  <i class="fas fa-close" ></i>
+                </button>
+                {% endif %}
+                  
+                
+              </div>
+              {% endfor %}
+
+            </div>
+
+
+            <hr>
+
+            
+            {% if request.user.is_authenticated %}
+            <form action="{% url 'post' slug=post.slug %}" method="POST">
+              {% csrf_token %}
+
+              <input type="hidden" name="post_id" value="{{ post.pk }}">
+              <div class="form-group">
+                <textarea class="form-control" placeholder="Comment" rows="5" name="comment"></textarea>
+              </div>
+
+              <button class="btn btn-primary btn-block" type="submit">Submit your comment</button>
+            </form>
+            {% else %}
+              <div class="alert alert-danger">You must log in to post comments. Please <a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a></div>
+            {% endif %}
+              
+            
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+
+  </main>
+  <!-- END Main container -->
+
+
+
+
+
+
+  <!-- Footer -->
+  {% include './footer.html' %}
+  <!-- END Footer -->
+
+
+
+  <!-- Scripts -->
+  {% include './scripts.html' %}
+  <script>
+
+    var blockquote = document.getElementsByTagName("blockquote")[0]
+    var code = Array.from(document.getElementsByTagName("code"))
+
+    function addCopyButtonToCodeSnippet(element) {
+      const parent = element.parentElement
+      parent.style.position = "relative"
+      const button_element = document.createElement("button")
+      button_element.textContent = "Copy"
+      button_element.className = "copy_button"
+      parent.prepend(button_element)
+      button_element.onclick = copyToClipboard
+    }
+
+    code.forEach(element => {
+      addCopyButtonToCodeSnippet(element)
+    });
+
+    if (blockquote) {
+      blockquote.className = "blockquote"
+      blockquote.innerHTML = '<div class="quote-sign"></div>' + blockquote.innerHTML
+    }
+
+    function copyToClipboard (element) {
+      const code_element = element.target.nextElementSibling.innerText
+      const el = document.createElement('textarea');
+      el.value = code_element;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      element.target.textContent = "Copied"
+    };
+
+    function delete_comment(el) {
+        "{% get_current_language as LANGUAGE_CODE %}"
+        var csrf_token = '{{ csrf_token }}'
+        var commentId = el.currentTarget.dataset.comment_id
+        var parent_element = el.currentTarget.parentElement
+        $.post("/{{ LANGUAGE_CODE }}/delete_comment/", {comment_id:commentId, csrfmiddlewaretoken:csrf_token}, (data, textStatus) => {
+            parent_element.remove()
+        })
+        
+    }
+
+    button_list = Array.from(document.querySelectorAll('[id="delete_comment"]'))
+    button_list.forEach(el => el.onclick = delete_comment)
+
+  </script>
+</body>
+
+</html>

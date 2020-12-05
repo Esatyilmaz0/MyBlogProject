@@ -1,0 +1,72 @@
+{% include './styles.html' %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    nav{
+        background-color: #000000!important;
+
+    }
+    .main-content{
+        display: flex;
+        align-items: center;
+        margin-top: 80px;
+        margin-bottom: 100px;
+    }
+    .profile-button{
+        transition: 650ms all;
+        color: rebeccapurple;
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom:10px;
+        border-radius: 5px;
+        border-color: rebeccapurple;
+    }
+    .profile-button:hover{
+        color: white!important;
+        background-color: rebeccapurple;
+        
+    }
+    
+</style>
+{% include "./navbar.html" %}
+
+{% load crispy_forms_tags %}
+
+<main class="main-content">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            
+            
+            {% for message in messages %}
+                <div class="col-md-7">
+                    
+                    {% if message.tags == "error" %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% else %}
+                        <div class="alert alert-{{ message.tags }}"></div>
+                    {% endif %}
+                        
+                    
+                </div>
+            {% endfor %}
+                
+                
+            
+            <div class="col-md-6">
+                
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ user_change_form|crispy }}
+                    {{ form|crispy }}
+                    <button class="btn my-2 my-sm-0 profile-button" type="submit">Change Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+{% include './footer.html' %}
+{% include './scripts.html' %}
+
+

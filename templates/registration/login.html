@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign In</title>
+    {% load static %}
+    {% load i18n %}
+    <link rel="stylesheet" href="{% static '/css/bootstrap3-7-7.min.css' %}">
+    <link rel="stylesheet" href="{% static '/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <script src="{% static '/js/jquery.min.js' %}"></script>
+    <script src="{%  static '/js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/css/login.css' %}">
+</head>
+<body>
+<div class="login-form">
+    <form action="{% url 'login' %}" method="post">
+		{% csrf_token %}
+        <h2 class="text-center">{% trans "Sign in" %}</h2>
+        <div class="form-group">
+        	<div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" name="username" placeholder="{% trans "Username" %}" required="required">
+            </div>
+        </div>
+		<div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                <input type="password" class="form-control" name="password" placeholder="{% trans "Password" %}" required="required">
+            </div>
+        </div>        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary login-btn btn-block">{% trans "Sign in" %}</button>
+        </div>
+        <div class="clearfix">
+            <a href="{% url 'home' %}" class="pull-left">{% trans "Home" %}</a>
+            <a href="{% url 'password_reset' %}" class="pull-right">{% trans "Forgot Password?" %}</a>
+        </div>
+
+        
+    </form>
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <p class="text-center text-muted small">{% trans "Don't have an account?" %} <a href="{% url 'register' %}">{% trans "Sign up here!" %}</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<style>
+  .nav-submenu hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .topbar-backdrop {
+    background-color: rgba(206, 189, 189, 1) !important;
+  }
+</style>
+<nav class="topbar topbar-inverse topbar-expand-md topbar-sticky">
+  <div class="container">
+
+    <div class="topbar-left">
+      <button class="topbar-toggler">&#9776;</button>
+      <a class="topbar-brand" href="{% url 'home' %}">
+        <img class="logo-default" src="/static/assets/logo.png" alt="logo">
+        <img class="logo-inverse" src="/static/assets/inverse_logo.png" alt="logo">
+      </a>
+    </div>
+
+
+    <div class="topbar-right">
+      <ul class="topbar-nav nav">
+        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Categories <i class="fa fa-caret-down"></i></a>
+          <div class="nav-submenu">
+
+            {% for category in categories %}
+            <a href="{% url 'category' category_name=category %}" class="nav-link">{{ category }}</a>
+            {% endfor %}
+
+
+
+          </div>
+        </li>
+        <!-- User Authentication Control -->
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="#">My Profile <i class="fa fa-caret-down"></i></a>
+          <div class="nav-submenu">
+            <a href="{% url 'profile' %}" class="nav-link">Edit Profile</a>
+            <a class="nav-link" href="{% url 'favourite_posts' %}">My Favourite Posts</a>
+            <hr>
+            {% if request.user.is_staff %}
+
+            <a class="nav-link" href="/admin">Dashboard</a>
+            {% endif %}
+
+            <a class="nav-link" href="{% url 'logout' %}">LogOut</a>
+          </div>
+        </li>
+      </ul>
+      {% else %}
+      </ul>
+      <div class="d-inline-flex ml-15">
+        
+        
+        <a class="btn btn-sm btn-primary mr-4" href="{% url 'login' %}">Login</a>
+        <a class="btn btn-sm btn-outline btn-primary hidden-sm-down" href="{% url 'register' %}">Register</a>
+      </div>
+      {% endif %}
+      <!-- ./User Authentication Control -->
+
+
+
+
+    </div>
+
+  </div>
+</nav>
